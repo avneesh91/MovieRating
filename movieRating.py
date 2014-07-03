@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import urllib2
 #import pynotify
@@ -10,9 +11,21 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
         pass
     def execute(self,menu,files):
         if len(files) == 1:
-          print files[0].get_name()
-          cmd = "notify-send '"+ files[0].get_name() +"'"
-          os.system(cmd)
+          if '.' in files[0].get_name():
+                movie_name = files[0].get_name().split('.')[0]
+	  else:
+                movie_name = files[0].get_name()	  
+          #cmd = "notify-send '"+ movie_name +"'"
+	  dataFetcher = rottenTom()
+	  movie_info = dataFetcher.getMovie(movie_name)
+          title = str(movie_info["movies"][0]["title"]).replace('\"','')
+          
+	  synopsis = str(movie_info["movies"][0]["synopsis"])
+	  re.sub('[^A-Za-z0-9]+', '', synopsis)
+	  
+	  cmd = "notify-send '"+ title +"' '"+ synopsis+"'"
+          print cmd
+	  os.system(cmd)
 	else:
           pass
     def get_file_items(self, window, files):
@@ -52,7 +65,7 @@ class rottenTom:
     	# in the url we need to use '+' instead of spaces
     	movie_format = movie_name.replace(u" ", u"+")
     	query = self.url.format(movie_format, page_limit)
-    	result_data = urllib2.urlopen(query)
-    	results = json.loads(result_data.read())
+    	result_data = urllib2.urlopen(query).read()
+    	results = json.loads(result_data)
        
-    	return json.dumps(results)
+    	return results
