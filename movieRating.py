@@ -1,43 +1,21 @@
-import os
-import re
-import json
-import urllib2
-#import pynotify
 from gi.repository import Nautilus, GObject
-
+import imdb
+import os
 
 class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
     def __init__(self):
         pass
-    def execute(self,menu,files):
-        if len(files) == 1:
-          if '.' in files[0].get_name():
-                movie_name = files[0].get_name().split('.')[0]
-	  else:
-                movie_name = files[0].get_name()	  
-          #cmd = "notify-send '"+ movie_name +"'"
-	  dataFetcher = rottenTom()
-	  movie_info = Extracter(dataFetcher.getMovie(movie_name))
-          print movie_info
-          #title = str(movie_info["movies"][0]["title"]).replace('\"','')
-          #synopsis = str(movie_info["movies"][0]["synopsis"])
-	  #re.sub('[^A-Za-z0-9]+', '', synopsis)
-	  
-	  cmd = "notify-send '"+ movie_info[0] +"' '"+ movie_info[1]+"'"
-          print cmd
-	  os.system(cmd)
-	else:
-          pass
+    def imdb_info(self,menu,files):
+  	 movie_name = Filename(files)      
+	 movie_dict = imdb.get_rating(movie_name)
+	 imdb.sendmessage(movie_dict['title'],movie_dict['desc'])
     def get_file_items(self, window, files):
         top_menuitem = Nautilus.MenuItem(name='MovieRating', 
                                          label='Movie Actions', 
                                          tip='',
                                          icon='')
-        
- 	top_menuitem.connect('activate',self.execute,files)       
+     	top_menuitem.connect('activate',self.imdb_info,files)       
         return top_menuitem,
-	
-	
 	
 def Extracter(movie_info_raw):
 	data_list = []
@@ -49,39 +27,9 @@ def Extracter(movie_info_raw):
 	data_list.append(synopsis)
 	return data_list
 	
-	
-	
-#For Consuming API
-
-
-class rottenTom:
-    """A very basic wrapper for the rottentomatoes api"""
-
-    cache_count = 20
-    url = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?' + \
-          'apikey=ufykyv9d94bcxfrjaw6xacqr&q={}&page_limit={}'
-
-    def __init__(self):
-
-        self.movie_cache = {} # caches data returned by api
-        self.movies_in_cache = {} # caches movie names and number of calls since last used
-
-  
-
-    def getMovie(self,movie_name,page_limit = 1):
-
-    	movie_name = movie_name.lower().strip()
-    	movie_format = movie_name.replace(u" ", u"+")
-    	"""
-    	Get a list of movies in theaters. 
-    	"""
-    	# in the url we need to use '+' instead of spaces
-    	movie_format = movie_name.replace(u" ", u"+")
-    	query = self.url.format(movie_format, page_limit)
-    	result_data = urllib2.urlopen(query).read()
-    	results = json.loads(result_data)
-       
-    	return results
-
-
-
+def Filename(files):
+	if len(files) == 1:
+          if '.' in files[0].get_name():
+                return files[0].get_name().split('.')[0]
+          else:
+                return files[0].get_name()
