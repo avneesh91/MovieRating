@@ -12,7 +12,7 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
 	 notify.sendmessage(movie_dict['title'],movie_dict['desc'])
     def get_file_items(self, window, files):
         top_menuitem = Nautilus.MenuItem(name='MovieRating', 
-                                         label='Movie Actions', 
+                                         label='Get IMDB Rating', 
                                          tip='',
                                          icon='')
      	top_menuitem.connect('activate',self.imdb_info,files)       
