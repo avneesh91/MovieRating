@@ -7,7 +7,8 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
     def __init__(self):
         pass
     def imdb_info(self,menu,files):
-  	 movie_name = Filename(files)      
+  	 movie_name = Filename(files)  
+	 notify.sendmessage('Fetching Movie Details....','')    
 	 movie_dict = imdb.get_rating(movie_name)
 	 notify.sendmessage(movie_dict['title'],movie_dict['desc'])
     def get_file_items(self, window, files):
