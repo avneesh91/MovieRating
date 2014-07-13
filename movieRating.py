@@ -17,13 +17,13 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
                 movie_name = files[0].get_name()	  
           #cmd = "notify-send '"+ movie_name +"'"
 	  dataFetcher = rottenTom()
-	  movie_info = dataFetcher.getMovie(movie_name)
-          title = str(movie_info["movies"][0]["title"]).replace('\"','')
-          
-	  synopsis = str(movie_info["movies"][0]["synopsis"])
-	  re.sub('[^A-Za-z0-9]+', '', synopsis)
+	  movie_info = Extracter(dataFetcher.getMovie(movie_name))
+          print movie_info
+          #title = str(movie_info["movies"][0]["title"]).replace('\"','')
+          #synopsis = str(movie_info["movies"][0]["synopsis"])
+	  #re.sub('[^A-Za-z0-9]+', '', synopsis)
 	  
-	  cmd = "notify-send '"+ title +"' '"+ synopsis+"'"
+	  cmd = "notify-send '"+ movie_info[0] +"' '"+ movie_info[1]+"'"
           print cmd
 	  os.system(cmd)
 	else:
@@ -36,9 +36,22 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
         
  	top_menuitem.connect('activate',self.execute,files)       
         return top_menuitem,
-
-
-
+	
+	
+	
+def Extracter(movie_info_raw):
+	data_list = []
+	title = str(movie_info_raw["movies"][0]["title"])
+	synopsis = str(movie_info_raw["movies"][0]["synopsis"])
+	re.sub('[^A-Za-z0-9]+', ' ', synopsis)
+ 	re.sub('[^A-Za-z0-9]+', '', title)
+	data_list.append(title)
+	data_list.append(synopsis)
+	return data_list
+	
+	
+	
+#For Consuming API
 
 
 class rottenTom:
@@ -69,3 +82,6 @@ class rottenTom:
     	results = json.loads(result_data)
        
     	return results
+
+
+
