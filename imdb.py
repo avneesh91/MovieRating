@@ -1,6 +1,6 @@
 from lxml import html
 import requests
-import subprocess
+
 
 def get_rating(movie_name):
 	return imdb_connect(movie_name)
@@ -80,7 +80,3 @@ def dict_maker(url,Movie_id,Title,description,Time,Genres):
 	Movie_data['duration_in_min'] = Duration_in_min
 	
 	return Movie_data
-		
-def sendmessage(Title,Message):
-	 subprocess.Popen(['notify-send', Title, Message])
-    	 return
