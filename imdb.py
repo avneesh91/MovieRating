@@ -43,14 +43,14 @@ def data_extract(movie_info,movie_url):
  		Genres_clean.append(get_substring(r))
 
 	
-	return dict_maker(movie_url,Movie_id,Title,description,Time,Genres)
+	return dict_maker(movie_url,Movie_id,Title,description,Time,Genres,Rating)
 
 def get_substring(raw_data):
 	raw_element =raw_data.split('/')
 	raw_string = str(raw_element[2])
 	return raw_string[:raw_string.find("?")]
 
-def dict_maker(url,Movie_id,Title,description,Time,Genres):
+def dict_maker(url,Movie_id,Title,description,Time,Genres,Rating):
 	
 	Movie_data = {}
 	#IMDB ID for the movie	
@@ -58,6 +58,9 @@ def dict_maker(url,Movie_id,Title,description,Time,Genres):
 
 	#Url - Only the Suffix
 	Movie_url = url
+	
+	#IMDB Rating
+	Movie_rating = Rating
 	
 	#clean genres
         Genres_clean= []
@@ -74,6 +77,7 @@ def dict_maker(url,Movie_id,Title,description,Time,Genres):
 
 	Movie_data['imdb_id'] = imdb_id
 	Movie_data['movie_url'] = Movie_url
+	Movie_data['movie_rating'] = Movie_rating
 	Movie_data['genre'] = Genres_clean
 	Movie_data['title'] = Movie_title
 	Movie_data['desc'] = Movie_description
