@@ -10,8 +10,11 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
     def imdb_info(self,menu,files):
   	 movie_name = Filename(files)  
 	 notify.sendmessage('Fetching Movie Details....','')    
-	 movie_dict = imdb.get_rating(movie_name)
-	 notify.sendmessage(movie_dict['title'],MessageMaker.CreateSummary(movie_dict))
+	 try:
+	 	movie_dict = imdb.get_rating(movie_name)
+	 	notify.sendmessage(movie_dict['title'],MessageMaker.CreateSummary(movie_dict))
+	 except:
+		notify.sendmessage("Error","Could not reach IMDB. Please make sure you have internet access.")		
     def get_file_items(self, window, files):
         top_menuitem = Nautilus.MenuItem(name='MovieRating', 
                                          label='Get IMDB Rating', 
