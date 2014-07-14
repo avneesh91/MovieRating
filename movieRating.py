@@ -1,5 +1,6 @@
 from gi.repository import Nautilus, GObject
 import imdb
+import MessageMaker
 import notify
 import os
 
@@ -10,7 +11,7 @@ class ColumnExtension(GObject.GObject, Nautilus.MenuProvider):
   	 movie_name = Filename(files)  
 	 notify.sendmessage('Fetching Movie Details....','')    
 	 movie_dict = imdb.get_rating(movie_name)
-	 notify.sendmessage(movie_dict['title'],movie_dict['desc'])
+	 notify.sendmessage(movie_dict['title'],MessageMaker.CreateSummary(movie_dict))
     def get_file_items(self, window, files):
         top_menuitem = Nautilus.MenuItem(name='MovieRating', 
                                          label='Get IMDB Rating', 
