@@ -1,21 +1,31 @@
 from lxml import html
+from multiprocessing import Process
+#import threading
 import requests
-
+import notify
+import MessageMaker
 
 def get_rating(movie_name):
-	return imdb_connect(movie_name)
+	rating_process = Process(target = imdb_connect,args=(movie_name,))
+	rating_process.start()
+	
 
 def imdb_connect(movie_name):
+	notify.sendmessage('Fetching data from IMDB','Getting rating for: '+movie_name)
+	
 	base_url = "http://www.imdb.com"
 	search_url = "/find?q="+ movie_name.replace(' ','+')
-	page = requests.get(base_url+search_url)
-	tree = html.fromstring(page.text)
-	movies = tree.xpath("//div[@class='findSection']/table[@class='findList']/tr/td/a/@href")
-	movie_url = movies[0]
-	movie_info = requests.get(base_url+movie_url)
-	movie_info = html.fromstring(movie_info.text)
-	return data_extract(movie_info,movie_url)
-
+	try:
+		page = requests.get(base_url+search_url)
+		tree = html.fromstring(page.text)
+		movies = tree.xpath("//div[@class='findSection']/table[@class='findList']/tr/td/a/@href")
+		movie_url = movies[0]
+		movie_info = requests.get(base_url+movie_url)
+		movie_info = html.fromstring(movie_info.text)
+		movie_dict = data_extract(movie_info,movie_url)
+		notify.sendmessage(movie_dict['title'],MessageMaker.CreateSummary(movie_dict))
+	except:
+                notify.sendmessage("Error","Could not reach IMDB. Please make sure you have internet access.")
 
 def data_extract(movie_info,movie_url):
 	
