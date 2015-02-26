@@ -3,12 +3,14 @@ dpkg -s python-nautilus >/dev/null 2>&1 &&{
      echo "Python Nautilus found"
      echo "Checking for python-nautilus folders"
 
-     if [! -d ~/.local/share/nautilus-python ]; then
-        mkdir ~/.local/share/nautilus-python
+     if [ ! -d ~/.local/share/nautilus-python ]
+     then
+        mkdir ~/.local/share/nautilus-python;
      fi
     
-     if [! -d ~/.local/share/nautilus-python/extensions]; then
-          mkdir ~/.local/share/nautilus-python/extensions
+     if [ ! -d ~/.local/share/nautilus-python/extensions ]
+     then
+          mkdir ~/.local/share/nautilus-python/extensions;
      fi
      
      echo "Copying files"     
@@ -16,7 +18,7 @@ dpkg -s python-nautilus >/dev/null 2>&1 &&{
      cp imdb.py ~/.local/share/nautilus-python/extensions
      cp MessageMaker.py ~/.local/share/nautilus-python/extensions
      cp movieRating.py ~/.local/share/nautilus-python/extensions
-     cp notify.py ~/.local/share/nautilus-python/extensions   
+     cp notify.py ~/.local/share/nautilus-python/extensions
 
      echo "Restarting Nautilus"
 
